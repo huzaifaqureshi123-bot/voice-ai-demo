@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Voice AI Demo</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f2027;
+    background: linear-gradient(to right, #203a43, #2c5364);
+    color: white;
+    text-align: center;
+    padding: 50px;
+}
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background: #00e5ff;
+    cursor: pointer;
+}
+#text {
+    margin-top: 30px;
+    font-size: 22px;
+}
+footer {
+    margin-top: 50px;
+    opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎤 Voice Talking AI</h1>
+<p>Tap button and speak</p>
+
+<button onclick="startListening()">Start Talking</button>
+
+<div id="text"></div>
+
+<footer>Developed by Muhammad Huzaifa</footer>
+
+<script>
+let recognition;
+
+function startListening() {
+
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Speech Recognition not supported");
+        return;
+    }
+
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    document.getElementById("text").innerText = "Listening...";
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        const userSpeech = event.results[0][0].transcript.toLowerCase();
+        document.getElementById("text").innerText = "You said: " + userSpeech;
+        reply(userSpeech);
+    };
+
+    recognition.onerror = function(event) {
+        document.getElementById("text").innerText = "Error: " + event.error;
+    };
+}
+
+function reply(text) {
+    let response = "Sorry, I did not understand";
+
+    if (text.includes("how are you")) {
+        response = "I am fine, thank you.";
+    }
+    else if (text.includes("hello")) {
+        response = "Hello, nice to meet you.";
+    }
+    else if (text.includes("fine")) {
+        response = "That is good to hear.";
+    }
+
+    speak(response);
+}
+
+function speak(message) {
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+</html>
